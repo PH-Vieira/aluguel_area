@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AlugaJá</string>
+    <string name="title_activity_main">AlugaJá</string>
+    <string name="package_name">com.alugaja.app</string>
+    <string name="custom_url_scheme">com.alugaja.app</string>
+</resources>
