@@ -18,7 +18,7 @@ const routes = [
     component: () => import('@/views/ScheduleView.vue')
   },
   {
-    path: '/meus-agendamento',
+    path: '/meus-agendamentos',
     name: 'MyBookings',
     component: () => import('@/views/MyBookingsView.vue')
   }
