@@ -36,6 +36,7 @@
 <script setup lang="js">
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
+import Toastify from 'toastify-js'
 
 const spaces = ref([])
 const loading = ref(false)
@@ -68,6 +69,7 @@ function openModal(id) {
 
 async function deleteSpace(id) {
   showModal.value = false
+  const nomeArea = getSpaceName(id)
   const { error: deleteError } = await supabase
     .from('spaces')
     .delete()
@@ -75,9 +77,23 @@ async function deleteSpace(id) {
   if (deleteError) {
     error.value = deleteError.message
     success.value = ''
+    Toastify({
+      text: `Erro ao excluir área "${nomeArea}"!`,
+      duration: 3000,
+      gravity: 'top',
+      position: 'center',
+      backgroundColor: '#f87171',
+    }).showToast()
   } else {
     spaces.value = spaces.value.filter(space => space.id !== id)
-    success.value = 'Área excluída com sucesso!'
+    success.value = `Área "${nomeArea}" excluída com sucesso!`
+    Toastify({
+      text: success.value,
+      duration: 2000,
+      gravity: 'top',
+      position: 'center',
+      backgroundColor: '#22c55e',
+    }).showToast()
     setTimeout(() => {
       success.value = ''
     }, 2000)
