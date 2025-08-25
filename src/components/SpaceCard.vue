@@ -23,19 +23,19 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="js">
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 
-const props = defineProps<{
-    id: number;
-    name: string;
-    img: string;
-}>()
+const props = defineProps({
+    id: Number,
+    name: String,
+    img: String,
+})
 
 const reviews = ref([])
 
-function formatDate(dateStr: string) {
+function formatDate(dateStr) {
     const date = new Date(dateStr)
     return date.toLocaleDateString('pt-BR')
 }
