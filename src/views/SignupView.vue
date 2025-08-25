@@ -1,8 +1,15 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
     <div class="bg-white p-8 rounded shadow w-full max-w-sm">
-      <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-      <form @submit.prevent="login">
+      <h2 class="text-2xl font-bold mb-6 text-center">Cadastro</h2>
+      <form @submit.prevent="signup">
+        <input
+          v-model="fullName"
+          type="text"
+          placeholder="Nome completo"
+          class="w-full mb-4 p-2 border rounded"
+          required
+        />
         <input
           v-model="email"
           type="email"
@@ -19,51 +26,55 @@
         />
         <button
           type="submit"
-          class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
           :disabled="loading"
         >
-          {{ loading ? 'Entrando...' : 'Entrar' }}
+          {{ loading ? 'Cadastrando...' : 'Cadastrar' }}
         </button>
         <p v-if="error" class="text-red-500 mt-4 text-center">{{ error }}</p>
       </form>
-      <button
-        @click="goToSignup"
-        class="w-full mt-4 bg-green-600 text-white py-2 rounded hover:bg-green-700"
-      >
-        Cadastrar
-      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="js">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
+import Toastify from 'toastify-js'
+import "toastify-js/src/toastify.css"
 
+const fullName = ref('')
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
 
-const router = useRouter()
-
-async function login() {
+async function signup() {
   loading.value = true
   error.value = ''
-  const { error: loginError } = await supabase.auth.signInWithPassword({
+  const { error: signupError, data } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
+    options: {
+      data: {
+        full_name: fullName.value
+      }
+    }
   })
-  if (loginError) {
-    error.value = loginError.message
+  if (signupError) {
+    error.value = signupError.message
   } else {
-    window.location.href = '/'
+    Toastify({
+      text: 'Cadastro realizado! Verifique seu e-mail para confirmar.',
+      duration: 3000,
+      gravity: 'top',
+      position: 'center',
+      backgroundColor: '#22c55e',
+    }).showToast()
+    setTimeout(() => {
+      window.location.href = '/login'
+    }, 2000)
   }
   loading.value = false
-}
-
-function goToSignup() {
-  router.push('/signup')
 }
 </script>
