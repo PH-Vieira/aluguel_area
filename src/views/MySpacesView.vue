@@ -10,10 +10,18 @@
           <h3 class="font-bold mb-1">{{ space.name }}</h3>
           <p class="text-sm text-gray-600 mb-1">{{ space.location }}</p>
           <p class="text-blue-700 font-semibold mb-2">R$ {{ space.price }}</p>
-          <button
-            @click="openModal(space.id)"
-            class="mt-auto bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-          >Excluir</button>
+          <div class="flex gap-2 mt-auto">
+            <button
+              @click="openModal(space.id)"
+              class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >Excluir</button>
+            <router-link
+              :to="`/my-spaces-schedule?spaceId=${space.id}`"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center justify-center"
+            >
+              Ver calendário
+            </router-link>
+          </div>
         </div>
       </div>
     </div>

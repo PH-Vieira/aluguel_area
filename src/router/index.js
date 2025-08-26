@@ -56,7 +56,13 @@ const routes = [
     name: 'MySpaces',
     component: () => import('@/views/MySpacesView.vue'),
     meta: { requiresAuth: true }
-  }
+  },
+  {
+    path: '/my-spaces-schedule',
+    name: 'MySpacesSchedule',
+    component: () => import('@/views/MySpacesScheduleView.vue'),
+    meta: { requiresAuth: true }
+  },
 ]
 
 const router = createRouter({

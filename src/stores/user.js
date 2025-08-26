@@ -17,9 +17,13 @@ export const useUserStore = defineStore('user', {
       const { data } = await supabase
         .from('profiles')
         .select('role')
-        .eq('user_id', this.userId)
+        .eq('id', this.userId)
         .single()
-      this.isAdvertiser = data?.role === 'anunciante' || data?.role === 'anunciante_locatario'
+      this.isAdvertiser = data?.role === 'anunciante_locatario'
+    },
+    logout() {
+      this.userId = null
+      this.isAdvertiser = false
     }
   }
 })

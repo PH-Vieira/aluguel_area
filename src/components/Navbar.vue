@@ -72,11 +72,13 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const open = ref(false)
 const isLoggedIn = ref(false)
 const isAdvertiser = ref(false)
 const router = useRouter()
+const userStore = useUserStore()
 
 async function checkAuth() {
     const { data } = await supabase.auth.getUser()
