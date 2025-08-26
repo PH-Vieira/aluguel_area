@@ -1,8 +1,8 @@
 <template>
-    <div class="bg-white rounded-lg shadow p-4">
-        <img :src="img" alt="Espaço" class="w-full h-40 object-cover rounded-md mb-2" />
-        <h3 class="text-lg font-semibold">{{ name }}</h3>
-        <router-link :to="`/espaco/${id}`" class="mt-2 text-blue-600 underline block">
+    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-4 flex flex-col h-full">
+        <img :src="img" alt="Espaço" class="w-full h-48 object-cover rounded-md mb-3" />
+        <h3 class="text-lg font-semibold mb-1">{{ name }}</h3>
+        <router-link :to="`/espaco/${id}`" class="mt-auto text-blue-600 underline block font-medium hover:text-blue-800">
             Ver detalhes
         </router-link>
 

@@ -4,7 +4,32 @@
             <router-link to="/">AlugaJá</router-link>
         </h1>
 
-        <button @click="open = !open">
+        <!-- Menu desktop -->
+        <div class="hidden md:flex items-center space-x-6">
+            <router-link to="/" class="text-sm">Início</router-link>
+            <template v-if="!isLoggedIn">
+                <router-link to="/login" class="text-sm">Login</router-link>
+                <router-link to="/signup" class="text-sm">Cadastro</router-link>
+            </template>
+            <template v-else>
+                <router-link to="/meus-agendamentos" class="text-sm">Meus Agendamentos</router-link>
+                <router-link to="/profile" class="text-sm">Meu perfil</router-link>
+                <router-link
+                    v-if="isAdvertiser"
+                    to="/add-space"
+                    class="text-sm"
+                >Cadastrar Área</router-link>
+                <router-link
+                    v-if="isAdvertiser"
+                    to="/my-spaces"
+                    class="text-sm"
+                >Meus Espaços</router-link>
+                <button @click="logout" class="text-sm">Deslogar</button>
+            </template>
+        </div>
+
+        <!-- Menu mobile -->
+        <button @click="open = !open" class="md:hidden">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -12,10 +37,10 @@
         </button>
 
         <!-- Overlay para fechar ao clicar fora -->
-        <div v-if="open" class="fixed inset-0 z-40" @click="open = false"></div>
+        <div v-if="open" class="fixed inset-0 z-40 md:hidden" @click="open = false"></div>
 
         <transition name="fade">
-            <div v-if="open" class="absolute right-4 top-14 bg-white border rounded shadow p-2 space-y-2 z-50">
+            <div v-if="open" class="absolute right-4 top-14 bg-white border rounded shadow p-2 space-y-2 z-50 md:hidden">
                 <router-link to="/" class="block text-sm" @click="open = false">Início</router-link>
                 <template v-if="!isLoggedIn">
                     <router-link to="/login" class="block text-sm" @click="open = false">Login</router-link>
