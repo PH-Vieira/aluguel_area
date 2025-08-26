@@ -13,17 +13,10 @@
       <div v-if="role === 'Locatario'" class="mt-6">
         <h3 class="font-semibold mb-2">Quero anunciar áreas</h3>
         <form @submit.prevent="activateAdvertiser">
-          <input
-            v-model="company"
-            type="text"
-            placeholder="Nome da empresa (opcional)"
-            class="w-full mb-2 p-2 border rounded"
-          />
-          <button
-            type="submit"
-            class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-            :disabled="loading"
-          >
+          <input v-model="company" type="text" placeholder="Nome da empresa (opcional)"
+            class="w-full mb-2 p-2 border rounded" />
+          <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+            :disabled="loading">
             {{ loading ? 'Salvando...' : 'Ativar anunciante' }}
           </button>
         </form>
@@ -86,6 +79,8 @@ async function activateAdvertiser() {
     .from('profiles')
     .update({ role: 'anunciante_locatario', company: company.value })
     .eq('id', userId)
+
+  await userStore.checkAdvertiser()
 
   if (updateError) {
     error.value = updateError.message

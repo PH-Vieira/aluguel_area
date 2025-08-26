@@ -7,23 +7,15 @@
         <!-- Menu desktop -->
         <div class="hidden md:flex items-center space-x-6">
             <router-link to="/" class="text-sm">Início</router-link>
-            <template v-if="!isLoggedIn">
+            <template v-if="!userStore.userId">
                 <router-link to="/login" class="text-sm">Login</router-link>
                 <router-link to="/signup" class="text-sm">Cadastro</router-link>
             </template>
             <template v-else>
                 <router-link to="/meus-agendamentos" class="text-sm">Meus Agendamentos</router-link>
                 <router-link to="/profile" class="text-sm">Meu perfil</router-link>
-                <router-link
-                    v-if="isAdvertiser"
-                    to="/add-space"
-                    class="text-sm"
-                >Cadastrar Área</router-link>
-                <router-link
-                    v-if="isAdvertiser"
-                    to="/my-spaces"
-                    class="text-sm"
-                >Meus Espaços</router-link>
+                <router-link v-if="userStore.isAdvertiser" to="/add-space" class="text-sm">Cadastrar Área</router-link>
+                <router-link v-if="userStore.isAdvertiser" to="/my-spaces" class="text-sm">Meus Espaços</router-link>
                 <button @click="logout" class="text-sm">Deslogar</button>
             </template>
         </div>
@@ -40,27 +32,21 @@
         <div v-if="open" class="fixed inset-0 z-40 md:hidden" @click="open = false"></div>
 
         <transition name="fade">
-            <div v-if="open" class="absolute right-4 top-14 bg-white border rounded shadow p-2 space-y-2 z-50 md:hidden">
+            <div v-if="open"
+                class="absolute right-4 top-14 bg-white border rounded shadow p-2 space-y-2 z-50 md:hidden">
                 <router-link to="/" class="block text-sm" @click="open = false">Início</router-link>
-                <template v-if="!isLoggedIn">
+                <template v-if="!userStore.userId">
                     <router-link to="/login" class="block text-sm" @click="open = false">Login</router-link>
                     <router-link to="/signup" class="block text-sm" @click="open = false">Cadastro</router-link>
                 </template>
                 <template v-else>
-                    <router-link to="/meus-agendamentos" class="block text-sm" @click="open = false">Meus Agendamentos</router-link>
+                    <router-link to="/meus-agendamentos" class="block text-sm" @click="open = false">Meus
+                        Agendamentos</router-link>
                     <router-link to="/profile" class="block text-sm" @click="open = false">Meu perfil</router-link>
-                    <router-link
-                        v-if="isAdvertiser"
-                        to="/add-space"
-                        class="block text-sm"
-                        @click="open = false"
-                    >Cadastrar Área</router-link>
-                    <router-link
-                        v-if="isAdvertiser"
-                        to="/my-spaces"
-                        class="block text-sm"
-                        @click="open = false"
-                    >Meus Espaços</router-link>
+                    <router-link v-if="userStore.isAdvertiser" to="/add-space" class="block text-sm"
+                        @click="open = false">Cadastrar Área</router-link>
+                    <router-link v-if="userStore.isAdvertiser" to="/my-spaces" class="block text-sm" @click="open = false">Meus
+                        Espaços</router-link>
                     <button @click="logout" class="block text-sm w-full text-left">Deslogar</button>
                 </template>
             </div>
@@ -75,39 +61,19 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const open = ref(false)
-const isLoggedIn = ref(false)
-const isAdvertiser = ref(false)
 const router = useRouter()
 const userStore = useUserStore()
 
-async function checkAuth() {
-    const { data } = await supabase.auth.getUser()
-    isLoggedIn.value = !!data.user
-
-    if (data.user) {
-        // Busca o perfil do usuário
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', data.user.id)
-            .single()
-        isAdvertiser.value = profile?.role === 'anunciante' || profile?.role === 'anunciante_locatario'
-    } else {
-        isAdvertiser.value = false
-    }
-}
-
 onMounted(() => {
-    checkAuth()
+    userStore.checkAdvertiser()
     supabase.auth.onAuthStateChange(() => {
-        checkAuth()
+        userStore.checkAdvertiser()
     })
 })
 
 async function logout() {
     await supabase.auth.signOut()
-    isLoggedIn.value = false
-    isAdvertiser.value = false
+    userStore.logout()
     router.push('/login')
     open.value = false
 }
