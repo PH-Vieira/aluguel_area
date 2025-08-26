@@ -16,6 +16,7 @@
                 <router-link to="/profile" class="text-sm">Meu perfil</router-link>
                 <router-link v-if="userStore.isAdvertiser" to="/add-space" class="text-sm">Cadastrar Área</router-link>
                 <router-link v-if="userStore.isAdvertiser" to="/my-spaces" class="text-sm">Meus Espaços</router-link>
+                <router-link v-if="userStore.isAdvertiser" to="/my-spaces-history" class="text-sm">Histórico de Agendamentos</router-link>
                 <button @click="logout" class="text-sm">Deslogar</button>
             </template>
         </div>
@@ -47,6 +48,7 @@
                         @click="open = false">Cadastrar Área</router-link>
                     <router-link v-if="userStore.isAdvertiser" to="/my-spaces" class="block text-sm" @click="open = false">Meus
                         Espaços</router-link>
+                    <router-link v-if="userStore.isAdvertiser" to="/my-spaces-history" class="block text-sm" @click="open = false">Histórico de Agendamentos</router-link>
                     <button @click="logout" class="block text-sm w-full text-left">Deslogar</button>
                 </template>
             </div>

@@ -63,6 +63,12 @@ const routes = [
     component: () => import('@/views/MySpacesScheduleView.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/my-spaces-history',
+    name: 'MySpacesHistory',
+    component: () => import('@/views/MySpacesHistoryView.vue'),
+    meta: { requiresAuth: true }
+  },
 ]
 
 const router = createRouter({
