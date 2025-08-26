@@ -3,26 +3,21 @@
         <div class="w-full max-w-md space-y-4">
             <h2 class="text-xl font-bold text-center">Agendar: {{ space?.name }}</h2>
             <label class="block mb-2">Data do agendamento</label>
-            <input
+            <VueDatePicker
                 v-model="date"
-                type="date"
-                class="w-full mb-4 p-2 border rounded"
-                :min="minDate"
-                :max="maxDate"
-                :disabled="loading"
-                required
-                :class="{ 'bg-gray-100': loading }"
-                :style="{ cursor: loading ? 'not-allowed' : 'pointer' }"
-                :readonly="loading"
-                :data-booked="isBooked(date)"
-                @input="validateDate"
+                :min-date="new Date()"
+                :disabled-dates="disabledDates"
+                :format="'yyyy-MM-dd'"
+                class="w-full mb-4"
+                :input-class="'w-full p-2 border rounded'"
+                :placeholder="'Selecione a data'"
             />
             <div v-if="date && isBooked(date)" class="text-red-500 text-xs mb-2">
                 Esta data já está agendada. Escolha outra.
             </div>
             <button
                 @click="openModal"
-                class="w-full bg-blue-600 text-white py-3 rounded"
+                class="w-full bg-blue-600 text-white py-3 rounded cursor-pointer"
                 :disabled="loading || !date || isBooked(date) || !isFuture(date)"
             >
                 Confirmar agendamento
@@ -52,6 +47,8 @@ import { useSpacesStore } from '@/stores/spaces'
 import { ref, onMounted } from 'vue'
 import Toastify from 'toastify-js'
 import { supabase } from '../supabase'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const route = useRoute()
 const router = useRouter()
@@ -61,37 +58,34 @@ const spacesStore = useSpacesStore()
 const space = spacesStore.spaces.find((s) => s.id === Number(route.params.id))
 
 const date = ref('')
-const minDate = new Date().toISOString().split('T')[0]
-const maxDate = '2100-12-31'
 const showModal = ref(false)
 const loading = ref(false)
 const bookedDates = ref([])
 
-function formatDateBr(dateStr) {
-    if (!dateStr) return ''
+function formatDateBr(dateInput) {
+    if (!dateInput) return ''
+    let dateStr = typeof dateInput === 'string'
+        ? dateInput
+        : dateInput.toISOString().split('T')[0]
     const [year, month, day] = dateStr.split('-')
     return `${day}/${month}/${year}`
 }
 
 function isBooked(d) {
-    return bookedDates.value.includes(d)
+    if (!d) return false
+    // d pode ser Date ou string
+    const dateStr = typeof d === 'string'
+        ? d
+        : d.toISOString().split('T')[0]
+    return bookedDates.value.includes(dateStr)
 }
 
 function isFuture(d) {
-    return d && new Date(d) >= new Date(minDate)
-}
-
-function validateDate() {
-    if (date.value && isBooked(date.value)) {
-        Toastify({
-            text: 'Esta data já está agendada. Escolha outra.',
-            duration: 3000,
-            gravity: 'top',
-            position: 'center',
-            backgroundColor: '#f87171',
-        }).showToast()
-        date.value = ''
-    }
+    if (!d) return false
+    const dateObj = typeof d === 'string' ? new Date(d) : d
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    return dateObj >= today
 }
 
 function openModal() {
@@ -161,10 +155,14 @@ async function confirmBooking() {
         return
     }
 
+    const dateStr = typeof date.value === 'string'
+        ? date.value
+        : date.value.toISOString().split('T')[0]
+
     const { error: insertError } = await supabase.from('bookings').insert({
         space_id: space.id,
         user_id: userId,
-        date: date.value
+        date: dateStr
     })
     if (insertError) {
         Toastify({
@@ -181,7 +179,7 @@ async function confirmBooking() {
     bookingStore.bookings.push({
         spaceId: space?.id,
         spaceName: space?.name,
-        date: formatDateBr(date.value)
+        date: formatDateBr(dateStr)
     })
 
     Toastify({
@@ -207,7 +205,18 @@ onMounted(async () => {
     if (!error && data) {
         bookedDates.value = data.map(b => b.date)
     }
+    if (!space || !space.id) {
+        Toastify({ text: 'Área não encontrada.', backgroundColor: '#f87171' }).showToast()
+        loading.value = false
+        return
+    }
 })
+
+// Função para desabilitar datas já agendadas
+function disabledDates(dateObj) {
+    const dateStr = dateObj.toISOString().split('T')[0]
+    return bookedDates.value.includes(dateStr)
+}
 </script>
 
 <style scoped>
