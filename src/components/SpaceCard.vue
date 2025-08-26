@@ -2,6 +2,7 @@
     <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-4 flex flex-col h-full">
         <img :src="img" alt="Espaço" class="w-full h-48 object-cover rounded-md mb-3" />
         <h3 class="text-lg font-semibold mb-1">{{ name }}</h3>
+        <p v-if="price !== undefined" class="text-blue-700 font-semibold mb-2">R$ {{ price }}</p>
         <router-link :to="`/espaco/${id}`" class="mt-auto text-blue-600 underline block font-medium hover:text-blue-800">
             Ver detalhes
         </router-link>
@@ -31,6 +32,7 @@ const props = defineProps({
     id: Number,
     name: String,
     img: String,
+    price: Number
 })
 
 const reviews = ref([])

@@ -10,6 +10,7 @@
     />
 
     <h2 v-if="space" class="text-2xl font-bold mb-2">{{ space.name }}</h2>
+    <p v-if="space" class="mb-2 text-blue-700 font-semibold">R$ {{ space.price }}</p>
     <p v-if="space" class="mb-4">{{ space.description }}</p>
     <div v-else class="text-center py-8">Carregando...</div>
     <ReviewForm :spaceId="space.id" />

@@ -10,6 +10,7 @@
                 :id="space.id"
                 :name="space.name"
                 :img="space.img || ''"
+                :price="space.price"
             />
         </div>
     </div>
