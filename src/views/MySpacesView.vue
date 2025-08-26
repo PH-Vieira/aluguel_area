@@ -1,18 +1,20 @@
 <template>
-  <div class="pt-16 px-4 max-w-md mx-auto">
+  <div class="pt-16 px-4 max-w-5xl mx-auto">
     <h2 class="text-xl font-bold mb-4">Minhas Áreas</h2>
     <div v-if="loading" class="text-center py-8">Carregando...</div>
     <div v-else-if="error" class="text-red-500 text-center py-8">{{ error }}</div>
     <div v-else>
-      <div v-for="space in spaces" :key="space.id" class="bg-white rounded-lg shadow p-4 mb-4">
-        <img v-if="space.img" :src="space.img" alt="Espaço" class="w-full h-40 object-cover rounded-md mb-2" />
-        <h3 class="font-bold">{{ space.name }}</h3>
-        <p>{{ space.location }}</p>
-        <p>R$ {{ space.price }}</p>
-        <button
-          @click="openModal(space.id)"
-          class="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-        >Excluir</button>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-for="space in spaces" :key="space.id" class="bg-white rounded-lg shadow p-4 flex flex-col h-full">
+          <img v-if="space.img" :src="space.img" alt="Espaço" class="w-full h-40 sm:h-48 md:h-56 lg:h-64 object-cover rounded-md mb-2" />
+          <h3 class="font-bold mb-1">{{ space.name }}</h3>
+          <p class="text-sm text-gray-600 mb-1">{{ space.location }}</p>
+          <p class="text-blue-700 font-semibold mb-2">R$ {{ space.price }}</p>
+          <button
+            @click="openModal(space.id)"
+            class="mt-auto bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >Excluir</button>
+        </div>
       </div>
     </div>
     <div v-if="success" class="text-green-500 text-center mt-4">{{ success }}</div>
